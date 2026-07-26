@@ -14,10 +14,24 @@ export function GameCard({ game, onClick, isFavorite, onToggleFavorite }) {
     onToggleFavorite?.(game.uid);
   };
 
+  const handleKeyDown = (e) => {
+    // Only react when the card itself is the target, not a descendant
+    // (e.g. the favorite button), since keydown bubbles up to us too.
+    if (e.target !== e.currentTarget) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick?.();
+    }
+  };
+
   return (
     <article
       onClick={onClick}
-      className="group bg-[var(--bg-card)] rounded-lg sm:rounded-xl border border-[var(--border)] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--shadow)] hover:border-[var(--gold)]/30"
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${game.name}`}
+      className="group bg-[var(--bg-card)] rounded-lg sm:rounded-xl border border-[var(--border)] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--shadow)] hover:border-[var(--gold)]/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--navy)] focus-visible:outline-offset-2"
     >
       {/* Image */}
       <div className="relative aspect-square sm:aspect-[4/3] bg-[var(--bg-sidebar)] overflow-hidden">

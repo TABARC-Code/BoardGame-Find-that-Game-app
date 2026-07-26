@@ -1,5 +1,6 @@
 import fs from 'fs';
 import https from 'https';
+import { generateUid } from './lib/uid.js';
 
 // Usage: node scripts/convert-bg-info.js <bg_info.csv> [old_board_games.csv]
 const CSV_PATH = process.argv[2];
@@ -317,9 +318,6 @@ async function main() {
   const output = gamesWithDetails
     .filter(g => g.details && g.details.thumbnail)
     .map(g => {
-      const slug = g.title.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
       return {
         game_id: parseInt(g.gameId),
         name: g.title,
@@ -339,7 +337,7 @@ async function main() {
         description: g.details.description || `${g.title} is a board game published in ${g.year}.`,
         categories: [g.type1, g.type2].filter(Boolean),
         mechanics: g.details.mechanics || [],
-        uid: `${g.gameId}-${g.year}-${slug}`
+        uid: generateUid(g.gameId, g.year, g.title)
       };
     });
 

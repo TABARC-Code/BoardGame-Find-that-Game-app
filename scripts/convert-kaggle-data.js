@@ -4,6 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateUid } from './lib/uid.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -112,10 +113,13 @@ function cleanDescription(desc) {
 function convertGame(row) {
   const categories = parseArray(row.category);
   const mechanics = parseArray(row.mechanic);
+  const gameId = parseInt(row.game_id) || 0;
+  const name = row.name || '';
+  const yearPublished = parseInt(row.year_published) || 2000;
 
   return {
-    game_id: parseInt(row.game_id) || 0,
-    name: row.name || '',
+    game_id: gameId,
+    name,
     thumbnail: fixImageUrl(row.thumbnail),
     image: fixImageUrl(row.image),
     average_rating: Math.round(parseFloat(row.average_rating || 0) * 10) / 10,
@@ -127,9 +131,10 @@ function convertGame(row) {
     min_age: parseInt(row.min_age) || 10,
     categories,
     mechanics,
-    year_published: parseInt(row.year_published) || 2000,
+    year_published: yearPublished,
     description: cleanDescription(row.description),
-    weight: deriveWeight(categories, mechanics)
+    weight: deriveWeight(categories, mechanics),
+    uid: generateUid(gameId, yearPublished, name)
   };
 }
 

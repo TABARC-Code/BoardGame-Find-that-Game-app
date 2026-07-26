@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Board Game Cafe - discover and explore board games with a fast, cozy discovery tool. Filter by rating, player count, playtime, and more." />
     <title>Board Game Cafe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Loaded as a non-render-blocking stylesheet: the browser fetches it at
+      `media="print"` priority (so it doesn't block first paint), then the
+      onload swaps it to `all` once it's ready. A CSS @import of this same
+      URL previously sat ahead of Tailwind's own import in index.css, which
+      made the whole app wait on this third-party request before rendering
+      at all - anyone with it blocked (ad blockers, corporate firewalls)
+      got a blank page until the browser gave up on it.
+    -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

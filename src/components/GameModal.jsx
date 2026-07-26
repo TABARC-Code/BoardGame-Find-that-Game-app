@@ -1,16 +1,42 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function GameModal({ game, onClose, isFavorite, onToggleFavorite }) {
+  const dialogRef = useRef(null);
+
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose();
+    const previouslyFocused = document.activeElement;
+    dialogRef.current?.focus();
+
+    const handleKeydown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-    document.addEventListener('keydown', handleEscape);
+
+    document.addEventListener('keydown', handleKeydown);
     document.body.style.overflow = 'hidden';
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleKeydown);
       document.body.style.overflow = '';
+      previouslyFocused?.focus?.();
     };
   }, [onClose]);
 
@@ -27,7 +53,12 @@ export function GameModal({ game, onClose, isFavorite, onToggleFavorite }) {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-3xl max-h-[90vh] bg-[var(--bg-card)] rounded-2xl shadow-2xl overflow-hidden"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="game-modal-title"
+        tabIndex={-1}
+        className="relative w-full max-w-3xl max-h-[90vh] bg-[var(--bg-card)] rounded-2xl shadow-2xl overflow-hidden outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Action buttons */}
@@ -84,7 +115,7 @@ export function GameModal({ game, onClose, isFavorite, onToggleFavorite }) {
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-1" style={{ fontFamily: 'Fraunces, Georgia, serif' }}>
+              <h2 id="game-modal-title" className="text-2xl md:text-3xl font-bold text-white mb-1" style={{ fontFamily: 'Fraunces, Georgia, serif' }}>
                 {game.name}
               </h2>
               <p className="text-white/80 text-sm">

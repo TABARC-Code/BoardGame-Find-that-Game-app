@@ -1,6 +1,6 @@
 import { GameCard } from './GameCard';
 
-export function GameGrid({ games, onGameClick, isFavorite, onToggleFavorite }) {
+export function GameGrid({ games, onGameClick, isFavorite, onToggleFavorite, onClearFilters }) {
   if (games.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -10,9 +10,17 @@ export function GameGrid({ games, onGameClick, isFavorite, onToggleFavorite }) {
         <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2" style={{ fontFamily: 'Fraunces, Georgia, serif' }}>
           No games found
         </h3>
-        <p className="text-sm text-[var(--text-secondary)] text-center max-w-md">
+        <p className="text-sm text-[var(--text-secondary)] text-center max-w-md mb-4">
           Try adjusting your filters to discover more games. There are thousands of great board games waiting to be explored!
         </p>
+        {onClearFilters && (
+          <button
+            onClick={onClearFilters}
+            className="px-4 py-2 text-sm font-medium text-white bg-[var(--navy)] hover:bg-[var(--navy-light)] rounded-lg transition-colors"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
     );
   }

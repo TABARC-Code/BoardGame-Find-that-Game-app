@@ -34,54 +34,59 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] paper-texture">
-      <TopBar
-        filters={filters}
-        setFilter={setFilter}
-        onMenuClick={() => setSidebarOpen(true)}
-      />
-
-      <div className="flex">
-        <FilterSidebar
+      {/* Hidden from assistive tech and made unfocusable/unclickable while
+          the modal is open, as a backstop to its own focus trap. */}
+      <div aria-hidden={selectedGame ? 'true' : undefined} inert={selectedGame ? true : undefined}>
+        <TopBar
           filters={filters}
           setFilter={setFilter}
-          toggleArrayFilter={toggleArrayFilter}
-          clearFilters={clearFilters}
-          hasActiveFilters={hasActiveFilters}
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          favoriteCount={favoriteCount}
-          games={games}
+          onMenuClick={() => setSidebarOpen(true)}
         />
 
-        <main className="flex-1 min-h-[calc(100vh-64px)]">
-          {/* Results count */}
-          <div className="px-4 lg:px-6 pt-4 pb-2 flex items-center justify-between">
-            <p className="text-sm text-[var(--text-secondary)]">
-              {loading ? 'Loading...' : `${filteredGames.length} games found`}
-            </p>
-            {/* Mobile sort */}
-            <select
-              value={filters.sort}
-              onChange={(e) => setFilter('sort', e.target.value)}
-              className="sm:hidden px-2 py-1 text-sm bg-[var(--bg-card)] border border-[var(--border)] rounded-lg"
-            >
-              {SORT_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
+        <div className="flex">
+          <FilterSidebar
+            filters={filters}
+            setFilter={setFilter}
+            toggleArrayFilter={toggleArrayFilter}
+            clearFilters={clearFilters}
+            hasActiveFilters={hasActiveFilters}
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            favoriteCount={favoriteCount}
+            games={games}
+          />
 
-          {loading ? (
-            <LoadingState />
-          ) : (
-            <GameGrid
-              games={filteredGames}
-              onGameClick={setSelectedGame}
-              isFavorite={isFavorite}
-              onToggleFavorite={toggleFavorite}
-            />
-          )}
-        </main>
+          <main className="flex-1 min-h-[calc(100vh-64px)]">
+            {/* Results count */}
+            <div className="px-4 lg:px-6 pt-4 pb-2 flex items-center justify-between">
+              <p className="text-sm text-[var(--text-secondary)]" aria-live="polite" aria-atomic="true">
+                {loading ? 'Loading...' : `${filteredGames.length} games found`}
+              </p>
+              {/* Mobile sort */}
+              <select
+                value={filters.sort}
+                onChange={(e) => setFilter('sort', e.target.value)}
+                className="sm:hidden px-2 py-1 text-sm bg-[var(--bg-card)] border border-[var(--border)] rounded-lg"
+              >
+                {SORT_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {loading ? (
+              <LoadingState />
+            ) : (
+              <GameGrid
+                games={filteredGames}
+                onGameClick={setSelectedGame}
+                isFavorite={isFavorite}
+                onToggleFavorite={toggleFavorite}
+                onClearFilters={clearFilters}
+              />
+            )}
+          </main>
+        </div>
       </div>
 
       {selectedGame && (

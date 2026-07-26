@@ -4,6 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateUid } from './lib/uid.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,7 +111,8 @@ function parseGamePage(html, gameId) {
     mechanics: [],
     year_published: year,
     description: description.substring(0, 500),
-    weight: 'medium'
+    weight: 'medium',
+    uid: generateUid(gameId, year, name)
   };
 }
 
@@ -146,6 +148,10 @@ async function main() {
         game.weight = existing.weight || 'medium';
         game.users_rated = existing.users_rated || 10000;
         game.min_age = existing.min_age || 10;
+        // Keep the existing uid so favorites/React keys stay stable across
+        // re-runs, rather than drifting if scraped name/year formatting
+        // differs slightly from what generated the original uid.
+        game.uid = existing.uid || game.uid;
         // Keep existing values if scraped ones are defaults
         if (game.average_rating === 7.0 && existing.average_rating) {
           game.average_rating = existing.average_rating;
