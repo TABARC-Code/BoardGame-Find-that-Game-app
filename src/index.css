@@ -109,6 +109,54 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background-color: var(--navy-light);
 }
 
+input[type="range"]::-moz-range-track {
+  background: var(--border);
+  height: 6px;
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background-color: var(--navy);
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px var(--shadow);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background-color: var(--navy-light);
+}
+
+/* Dual-handle range slider: two inputs sharing one track (see
+   DualRangeSlider.jsx). Each input's own track is made invisible and
+   click-through, so only its thumb is interactive - otherwise whichever
+   input is on top would swallow every click/drag on the shared track. */
+.dual-range-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  pointer-events: none;
+}
+
+.dual-range-input::-webkit-slider-runnable-track {
+  background: transparent;
+}
+
+.dual-range-input::-moz-range-track {
+  background: transparent;
+}
+
+.dual-range-input::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+
+.dual-range-input::-moz-range-thumb {
+  pointer-events: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

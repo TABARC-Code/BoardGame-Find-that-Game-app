@@ -83,6 +83,7 @@ function App() {
                 isFavorite={isFavorite}
                 onToggleFavorite={toggleFavorite}
                 onClearFilters={clearFilters}
+                resetKey={JSON.stringify(filters)}
               />
             )}
           </main>

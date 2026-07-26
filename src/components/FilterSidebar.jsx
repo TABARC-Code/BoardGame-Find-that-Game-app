@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { DualRangeSlider } from './ui/DualRangeSlider';
 
 const VOTER_OPTIONS = [
   { value: 1000, label: '1K+' },
@@ -130,34 +131,17 @@ export function FilterSidebar({ filters, setFilter, toggleArrayFilter, clearFilt
             <label className="block text-sm font-semibold text-[var(--text-primary)] mb-3">
               Rating: {filters.ratingMin.toFixed(1)} - {filters.ratingMax.toFixed(1)}
             </label>
-            <div className="space-y-2">
-              <input
-                type="range"
-                min="1"
-                max="10"
-                step="0.5"
-                value={filters.ratingMin}
-                onChange={(e) => {
-                  const value = Math.min(parseFloat(e.target.value), filters.ratingMax);
-                  setFilter('ratingMin', value);
-                }}
-                aria-label="Minimum rating"
-                className="w-full"
-              />
-              <input
-                type="range"
-                min="1"
-                max="10"
-                step="0.5"
-                value={filters.ratingMax}
-                onChange={(e) => {
-                  const value = Math.max(parseFloat(e.target.value), filters.ratingMin);
-                  setFilter('ratingMax', value);
-                }}
-                aria-label="Maximum rating"
-                className="w-full"
-              />
-            </div>
+            <DualRangeSlider
+              min={1}
+              max={10}
+              step={0.5}
+              valueMin={filters.ratingMin}
+              valueMax={filters.ratingMax}
+              onChangeMin={(value) => setFilter('ratingMin', value)}
+              onChangeMax={(value) => setFilter('ratingMax', value)}
+              ariaLabelMin="Minimum rating"
+              ariaLabelMax="Maximum rating"
+            />
           </div>
 
           {/* Min Voters */}
